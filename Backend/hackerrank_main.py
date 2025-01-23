@@ -16,10 +16,12 @@ class HRMain:
         hr_session = HackerrankSession(self.adminUsername, self.adminPassword)
         sql_proc = SQLprocessor() 
         usernames = hr_session.fetch_users(self.contest_slug)
+        print(usernames)
         """
         This will get the all latetst users registered for the contest
         """
         for username in usernames:
+            print("100")
             last_fetch_time = sql_proc.fetch_last_attempt_time(username, self.contest_slug)
             # get the max time from current_user_attempts and set it to last_fetch_time.
             contest_submissions = UserContestSubmissions(username, self.contest_slug, hr_session)
@@ -36,7 +38,9 @@ class HRMain:
         """
         This function is used to fetch the old data of all the users of the contest from DB.
         """
+        print("2")
         sql_proc = SQLprocessor() 
+        print("3")
         users = sql_proc.fetch_users_list(self.contest_slug)
         probs = sql_proc.fetch_unique_problem_slugs(self.contest_slug)
         userAttempts = sql_proc.fetch_user_attempts_dict(self.contest_slug)

@@ -1,9 +1,13 @@
 # import selenium
 from selenium import webdriver
 import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from webdriver_manager.chrome import ChromeDriverManager
 # from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.chrome.options import Options
+import pickle
+
 class HackerrankSession:
     """
     Class to manage Hackerrank Session
@@ -18,6 +22,7 @@ class HackerrankSession:
         # chrome_driver_path = "C:\Hackerrank Plagiarism Checker\Hackerrank-WebScraping-Selenium\Backend\chromedriver.exe"
 
         # Initialize the Chrome driver with the specified path
+        print("4")
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         self.__driver = webdriver.Chrome()
@@ -31,8 +36,17 @@ class HackerrankSession:
         m.send_keys(username)
         m = self.__driver.find_element("name", "password")
         m.send_keys(password)
-        self.__driver.find_element(
-            "css selector", ".ui-btn.ui-btn-primary").click()
+        print("1")
+        login_button = self.__driver.find_element(
+            By.XPATH, "//button[contains(@class, 'c-cUYkx') and text()='Log In']")
+
+    # Scroll to the button if not visible and click it
+        ActionChains(self.__driver).move_to_element(login_button).click(login_button).perform()
+        cookies = self.__driver.get_cookies()
+
+# Save cookies to a file
+        with open("cookies.pkl", "wb") as cookie_file:
+            pickle.dump(cookies, cookie_file)
     def logout(self):
         pass
     def fetch_link(self, link):
@@ -65,6 +79,11 @@ class HackerrankSession:
         """
         page = 1
         contest_submission_url = f"contests/{contest_slug}/leaderboard"
+        with open("cookies.pkl", "rb") as cookie_file:
+            cookies = pickle.load(cookie_file)
+            for cookie in cookies:
+                self.__driver.add_cookie(cookie)
+        self.__driver.refresh()
         usernames = []
         while self.check_page_valid(page,contest_submission_url):
             for submission_item in self.driver.find_elements("class name", "leaderboard-row"):
@@ -149,7 +168,10 @@ class UserContestSubmissions:
         """
         # for each row.
         current_item_time = last_fetch_time
-        for submission_item in self.hr_session.driver.find_elements("class name", "submissions_item"):
+        print("h1")
+        for submission_item in self.hr_session.driver.find_elements("class name","submissions_item"):
+            print("h2")
+            print(submission_item)
             cols = self.__parse_submission_row(submission_item)
             current_item_time = cols["time"]
             # assign only if needed
@@ -186,6 +208,7 @@ class UserContestSubmissions:
         # and store it in user_attempt dict
         contest_submission_url = f"contests/{self.contest_slug}/judge/submissions/team/{self.username}"
         while self.hr_session.check_page_valid(page,contest_submission_url):
+            time.sleep(10)
             time_processed = self.__fetch_latest_user_attempts(
                 user_attempts, last_fetch_time)
             if time_processed <= last_fetch_time:

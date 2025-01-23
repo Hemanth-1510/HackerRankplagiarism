@@ -6,11 +6,11 @@ class SQLprocessor:
     problems_to_check = {}
     def __init__(self):
 
-        # self.mydb = connector.connect(
-        #     host="localhost",
-        #     user="root",
-        #     password="test",
-        #     database="test")
+        '''self.mydb = connector.connect(
+            host="localhost",
+            user="root",
+            password="1234",
+            database="test")'''
         self.mydb = sqlite3.connect("test.sqlite3")
         self.cursor = self.mydb.cursor()
         # self.cursor = self.mydb.cursor(buffered=True)

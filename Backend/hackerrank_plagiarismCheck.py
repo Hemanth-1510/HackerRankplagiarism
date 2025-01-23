@@ -31,7 +31,7 @@ def plagiariseCodes(usernames):
             """
               'python-loops': [('20Pa1a5430', 'python-loops', 'python3', 10, '\nn = int(input())\nfor i in range(n):\n    print(i*i) \n    '), ...]
             """
-            max = 99
+            max = 95
             max_User = ()
             for individualAttempt in problems_to_check.get(attempt):
               curr_attempt_user = individualAttempt[0]
