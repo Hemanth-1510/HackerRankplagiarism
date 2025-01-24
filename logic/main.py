@@ -98,10 +98,10 @@ async def signup_post(username: str = Form(...), email: str = Form(...), passwor
     try:
         cursor.execute('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', (username, email, hashed_password))
         conn.commit()
-        set_flash(request, "created successfully!", "success")
+        set_flash("", "created successfully!", "success")
         return RedirectResponse(url="/login", status_code=303)
     except sqlite3.IntegrityError:
-        return templates.TemplateResponse("signup.html", {"request": request, "error": "Username or Email already exists"})
+        return templates.TemplateResponse("signup.html")
 
 @app.get("/forgot-password", response_class=HTMLResponse)
 async def forgot_password(request: Request):
